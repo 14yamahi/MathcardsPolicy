@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathcards Account Deletion</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f8fc;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --danger: #b91c1c;
+        --danger-bg: #fef2f2;
+        --danger-border: #fecaca;
+        --success: #166534;
+        --success-bg: #ecfdf5;
+        --success-border: #bbf7d0;
+        --border: #d1d5db;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      main {
+        max-width: 780px;
+        margin: 40px auto;
+        padding: 0 16px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+      }
+
+      h1,
+      h2 {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+        margin: 18px 0 8px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .callout {
+        border-radius: 8px;
+        padding: 12px;
+        margin: 14px 0;
+      }
+
+      .callout-danger {
+        background: var(--danger-bg);
+        border: 1px solid var(--danger-border);
+        color: var(--danger);
+      }
+
+      .callout-success {
+        background: var(--success-bg);
+        border: 1px solid var(--success-border);
+        color: var(--success);
+      }
+
+      label {
+        display: block;
+        margin-top: 12px;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+
+      input,
+      button {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      input {
+        border: 1px solid var(--border);
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      button {
+        width: auto;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        background: var(--primary);
+      }
+
+      button:hover {
+        background: var(--primary-hover);
+      }
+
+      .secondary {
+        background: #374151;
+      }
+
+      .secondary:hover {
+        background: #1f2937;
+      }
+
+      .danger {
+        background: var(--danger);
+      }
+
+      .danger:hover {
+        background: #991b1b;
+      }
+
+      .checkbox {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin-top: 12px;
+      }
+
+      .checkbox input {
+        width: auto;
+        margin-top: 5px;
+      }
+
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px;
+        margin-top: 12px;
+      }
+
+      #status {
+        margin-top: 14px;
+        font-weight: 600;
+      }
+
+      #status.error {
+        color: var(--danger);
+      }
+
+      #status.success {
+        color: var(--success);
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1>Delete Your Mathcards Account</h1>
+        <p>
+          You can permanently delete your Mathcards account from this page. For
+          security, you must sign in first and confirm the deletion request.
+        </p>
+
+        <div class="callout callout-danger">
+          This action permanently deletes your account and your synced cards/decks data.
+        </div>
+
+        <h2>Step 1: Sign in</h2>
+        <p class="muted">Sign in with the same method you use in the app.</p>
+
+        <div class="panel">
+          <button id="google-signin" type="button">Sign in with Google</button>
+
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" />
+
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Your password" />
+
+          <div class="button-row">
+            <button id="email-signin" class="secondary" type="button">Sign in with Email</button>
+            <button id="signout" class="secondary hidden" type="button">Sign out</button>
+          </div>
+        </div>
+
+        <h2>Step 2: Confirm and delete</h2>
+        <div id="signed-in-panel" class="panel hidden">
+          <p><strong>Signed in as:</strong> <span id="current-user">—</span></p>
+
+          <label for="reauth-password">Re-enter password (email accounts only)</label>
+          <input
+            id="reauth-password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Required if you signed in with email/password"
+          />
+
+          <div class="checkbox">
+            <input id="confirm-delete" type="checkbox" />
+            <label for="confirm-delete">
+              I understand this permanently deletes my Mathcards account and data.
+            </label>
+          </div>
+
+          <button id="delete-account" class="danger" type="button">Delete my account now</button>
+        </div>
+
+        <div id="fallback-help" class="callout callout-success hidden">
+          If automatic deletion fails, email us at <strong>help.mathcardsapp@gmail.com</strong>
+          and include the account email used in Mathcards.
+        </div>
+
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+      import {
+        deleteUser,
+        EmailAuthProvider,
+        getAuth,
+        GoogleAuthProvider,
+        onAuthStateChanged,
+        reauthenticateWithCredential,
+        reauthenticateWithPopup,
+        signInWithEmailAndPassword,
+        signInWithPopup,
+        signOut,
+      } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+      import {
+        collection,
+        deleteDoc,
+        doc,
+        getDocs,
+        getFirestore,
+      } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+
+      const firebaseConfig = {
+        apiKey: 'AIzaSyBSGx_k3RYsiEIXFuqxRnqWr1PLHHkp8RQ',
+        authDomain: 'mathcards-691f7.firebaseapp.com',
+        projectId: 'mathcards-691f7',
+        storageBucket: 'mathcards-691f7.firebasestorage.app',
+        messagingSenderId: '15344543311',
+        appId: '1:15344543311:web:7aac98a9d5e48069e1ec3a',
+        measurementId: 'G-0P6Q2H1S3J',
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const statusEl = document.getElementById('status');
+      const currentUserEl = document.getElementById('current-user');
+      const signedInPanel = document.getElementById('signed-in-panel');
+      const fallbackHelp = document.getElementById('fallback-help');
+      const signOutBtn = document.getElementById('signout');
+      const deleteBtn = document.getElementById('delete-account');
+
+      function setStatus(message, type = '') {
+        statusEl.textContent = message;
+        statusEl.className = type;
+      }
+
+      function updateSignedInUi(user) {
+        if (!user) {
+          currentUserEl.textContent = '—';
+          signedInPanel.classList.add('hidden');
+          signOutBtn.classList.add('hidden');
+          return;
+        }
+
+        currentUserEl.textContent = user.email || user.uid;
+        signedInPanel.classList.remove('hidden');
+        signOutBtn.classList.remove('hidden');
+      }
+
+      async function deleteCollection(pathRef) {
+        const snapshot = await getDocs(pathRef);
+        if (snapshot.empty) {
+          return;
+        }
+        await Promise.all(snapshot.docs.map((item) => deleteDoc(item.ref)));
+      }
+
+      async function deleteUserData(uid) {
+        await deleteCollection(collection(db, 'users', uid, 'cards'));
+        await deleteCollection(collection(db, 'users', uid, 'decks'));
+        await deleteDoc(doc(db, 'users', uid)).catch(() => {
+          // Ignore if document does not exist.
+        });
+      }
+
+      document.getElementById('google-signin').addEventListener('click', async () => {
+        try {
+          await signInWithPopup(auth, new GoogleAuthProvider());
+          setStatus('Signed in with Google.', 'success');
+          fallbackHelp.classList.add('hidden');
+        } catch (error) {
+          setStatus(`Google sign-in failed: ${error.message}`, 'error');
+        }
+      });
+
+      document.getElementById('email-signin').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        if (!email || !password) {
+          setStatus('Enter both email and password to sign in.', 'error');
+          return;
+        }
+
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          setStatus('Signed in with email/password.', 'success');
+          fallbackHelp.classList.add('hidden');
+        } catch (error) {
+          setStatus(`Email sign-in failed: ${error.message}`, 'error');
+        }
+      });
+
+      signOutBtn.addEventListener('click', async () => {
+        await signOut(auth);
+        setStatus('Signed out.', 'success');
+      });
+
+      deleteBtn.addEventListener('click', async () => {
+        const user = auth.currentUser;
+        const confirmed = document.getElementById('confirm-delete').checked;
+
+        if (!user) {
+          setStatus('Sign in first to delete your account.', 'error');
+          return;
+        }
+
+        if (!confirmed) {
+          setStatus('Please confirm that account deletion is permanent.', 'error');
+          return;
+        }
+
+        deleteBtn.disabled = true;
+        deleteBtn.textContent = 'Deleting...';
+
+        try {
+          const providerIds = user.providerData.map((provider) => provider.providerId);
+
+          if (providerIds.includes('password')) {
+            const password = document.getElementById('reauth-password').value;
+            const email = user.email;
+            if (!email || !password) {
+              throw new Error('Re-enter your password to confirm deletion.');
+            }
+
+            const credential = EmailAuthProvider.credential(email, password);
+            await reauthenticateWithCredential(user, credential);
+          } else if (providerIds.includes('google.com')) {
+            await reauthenticateWithPopup(user, new GoogleAuthProvider());
+          }
+
+          await deleteUserData(user.uid);
+          await deleteUser(user);
+
+          setStatus('Your account and synced data have been deleted.', 'success');
+          fallbackHelp.classList.add('hidden');
+          updateSignedInUi(null);
+        } catch (error) {
+          setStatus(`Could not delete account automatically: ${error.message}`, 'error');
+          fallbackHelp.classList.remove('hidden');
+        } finally {
+          deleteBtn.disabled = false;
+          deleteBtn.textContent = 'Delete my account now';
+        }
+      });
+
+      onAuthStateChanged(auth, (user) => {
+        updateSignedInUi(user);
+      });
+    </script>
+  </body>
+</html>
