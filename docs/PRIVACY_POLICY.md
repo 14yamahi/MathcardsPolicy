@@ -61,7 +61,7 @@ Depending on your region, you may have rights to:
 - Request deletion of your data
 - Object to or restrict certain processing
 
-To make a request, contact us at: help.mathcardsapp@gmail.com.
+To make a request, sign-in via the <a href="DELETE_ACCOUNT.html">Delete Account Form </a> or contact us at: help.mathcardsapp@gmail.com.
 
 ## 6. Children’s Privacy
 
